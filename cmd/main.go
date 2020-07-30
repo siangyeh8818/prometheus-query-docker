@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-        utils "github.com/siangyeh8818/prometheus-query-docker/internal"
+	utils "github.com/siangyeh8818/prometheus-query-docker/internal"
 	prometheus "github.com/siangyeh8818/prometheus-query-docker/internal/client"
 	"github.com/ymotongpoo/datemaki"
 )
@@ -53,7 +53,7 @@ func main() {
 		onError(err)
 	}
 
-	err = utils.printResp(resp, options.format)
+	err = utils.PrintResp(resp, options.format)
 	if err != nil {
 		onError(err)
 	}

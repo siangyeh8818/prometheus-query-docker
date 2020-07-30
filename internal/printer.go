@@ -7,23 +7,25 @@ import (
 	"strings"
 	"time"
 
+	//prometheus "github.com/ryotarai/prometheus-query/client"
+	//prometheus "github.com/ryotarai/prometheus-query/client"
 	prometheus "github.com/siangyeh8818/prometheus-query-docker/internal/client"
 )
 
-func printResp(resp *prometheus.QueryRangeResponse, format string) error {
+func PrintResp(resp *prometheus.QueryRangeResponse, format string) error {
 	switch format {
 	case "tsv":
-		return printRespXSV(resp, "\t")
+		return PrintRespXSV(resp, "\t")
 	case "csv":
-		return printRespXSV(resp, ",")
+		return PrintRespXSV(resp, ",")
 	case "json":
-		return printRespJSON(resp)
+		return PrintRespJSON(resp)
 	}
 
 	return fmt.Errorf("unknown format: %s", format)
 }
 
-func printRespJSON(resp *prometheus.QueryRangeResponse) error {
+func PrintRespJSON(resp *prometheus.QueryRangeResponse) error {
 	type valueEntry struct {
 		Metric map[string]string `json:"metric"`
 		Value  float64           `json:"value"`
@@ -74,7 +76,7 @@ func printRespJSON(resp *prometheus.QueryRangeResponse) error {
 	return nil
 }
 
-func printRespXSV(resp *prometheus.QueryRangeResponse, delimiter string) error {
+func PrintRespXSV(resp *prometheus.QueryRangeResponse, delimiter string) error {
 	type valueByMetric map[string]float64
 
 	valuesByTime := map[time.Time]valueByMetric{}
