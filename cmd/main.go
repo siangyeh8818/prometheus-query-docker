@@ -7,8 +7,8 @@ import (
 	"os"
 	"time"
 
-	prometheus "github.com/siangyeh8818/prometheus-query-docker/internal/client"
         utils "github.com/siangyeh8818/prometheus-query-docker/internal"
+	prometheus "github.com/siangyeh8818/prometheus-query-docker/internal/client"
 	"github.com/ymotongpoo/datemaki"
 )
 

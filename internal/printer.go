@@ -1,4 +1,4 @@
-package printfile
+package utils
 
 import (
 	"encoding/json"
