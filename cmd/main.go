@@ -52,7 +52,7 @@ func main() {
 		onError(err)
 	}
 
-	err = printResp(resp, options.format)
+	err = utils.printResp(resp, options.format)
 	if err != nil {
 		onError(err)
 	}
