@@ -9,12 +9,12 @@ WORKDIR /go/src/github.com/siangyeh8818/prometheus-query-docker
 
 # RUN go mod init github.com/pnetwork/sre.monitor.metrics
 RUN go mod download
-COPY cmd /go/src/github.com/siangyeh8818/mysql-to-prometheus/cmd
-COPY internal /go/src/github.com/siangyeh8818/mysql-to-prometheus/internal
+COPY cmd /go/src/github.com/siangyeh8818/prometheus-query-docker/cmd
+COPY internal /go/src/github.com/siangyeh8818/prometheus-query-docker/internal
 #COPY pkg /go/src/github.com/pnetwork/sre.monitor.metrics/pkg
 
 # Build the Go app
-RUN env GOOS=linux GOARCH=amd64 go build -o mysql-to-prometheus -v -ldflags "-s" github.com/siangyeh8818/mysql-to-prometheus/cmd/
+RUN env GOOS=linux GOARCH=amd64 go build -o prometheusQuery -v -ldflags "-s" github.com/siangyeh8818/prometheus-query-docker/cmd/
 
 ##### To reduce the final image size, start a new stage with alpine from scratch #####
 
@@ -25,8 +25,8 @@ RUN apk --no-cache add ca-certificates libc6-compat busybox-extras
 WORKDIR /root/
 
 # Copy the pre-built binary file from the previous stage
-COPY --from=builder /go/src/github.com/siangyeh8818/mysql-to-prometheus/mysql-to-prometheus /usr/local/bin/mysql-to-prometheus
+COPY --from=builder /go/src/github.com/siangyeh8818/prometheus-query-docker/prometheusQuery /usr/local/bin/prometheusQuery
 
 # EXPOSE 8081
 
-ENTRYPOINT [ "mysql-to-prometheus" ] 
+ENTRYPOINT [ "prometheusQuery" ] 
