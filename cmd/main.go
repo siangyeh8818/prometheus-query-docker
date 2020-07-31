@@ -9,6 +9,7 @@ import (
 
 	utils "github.com/siangyeh8818/prometheus-query-docker/internal"
 	prometheus "github.com/siangyeh8818/prometheus-query-docker/internal/client"
+	nexus "github.com/siangyeh8818/prometheus-query-docker/internal/nexus"
 	"github.com/ymotongpoo/datemaki"
 )
 
@@ -53,9 +54,26 @@ func main() {
 		onError(err)
 	}
 
-	err = utils.PrintResp(resp, options.format)
+	err = utils.PrintResp(resp, options.format, "report.csv")
 	if err != nil {
 		onError(err)
+	}
+	if options.format == "csv" {
+		nTime := time.Now()
+		local1, _ := time.LoadLocation("Asia/Taipei") //等同于"CST"
+
+		logDay := nTime.In(local1).Format("20060102")
+		NexusServer := os.Getenv("NEXUS_SERVER")
+		NexusUser := os.Getenv("NEXUS_USER")
+		NexusPassword := os.Getenv("NEXUS_PASSWORD")
+		NexusRepository := os.Getenv("NEXUS_REPOSITORY")
+		PostURL := "curl -X POST  '" + NexusServer + "/service/rest/v1/components?repository=" + NexusRepository + "' --user  " + NexusUser + ":" + NexusPassword + " -F 'raw.directory=" + logDay + "' -F 'raw.asset1=@report.csv;type=text/csv' -F 'raw.asset1.filename=report.csv' -H 'accept: application/json' -H 'Content-Type: multipart/form-data'"
+		fmt.Println(PostURL)
+
+		result, _ := nexus.ExecShell(PostURL)
+		//fmt.Println(result)
+		//nexus.POSTForm_NesusAPI("report.csv")
+		//nexus.PostNesusAPI(PostURL, NexusUser, NexusPassword, "")
 	}
 
 }

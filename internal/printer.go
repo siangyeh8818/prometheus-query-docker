@@ -3,6 +3,7 @@ package utils
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"sort"
 	"strings"
 	"time"
@@ -12,12 +13,12 @@ import (
 	prometheus "github.com/siangyeh8818/prometheus-query-docker/internal/client"
 )
 
-func PrintResp(resp *prometheus.QueryRangeResponse, format string) error {
+func PrintResp(resp *prometheus.QueryRangeResponse, format string, outputfilename string) error {
 	switch format {
 	case "tsv":
-		return PrintRespXSV(resp, "\t")
+		return PrintRespXSV(resp, "\t", outputfilename)
 	case "csv":
-		return PrintRespXSV(resp, ",")
+		return PrintRespXSV(resp, ",", outputfilename)
 	case "json":
 		return PrintRespJSON(resp)
 	}
@@ -76,7 +77,7 @@ func PrintRespJSON(resp *prometheus.QueryRangeResponse) error {
 	return nil
 }
 
-func PrintRespXSV(resp *prometheus.QueryRangeResponse, delimiter string) error {
+func PrintRespXSV(resp *prometheus.QueryRangeResponse, delimiter string, outputfilename string) error {
 	type valueByMetric map[string]float64
 
 	valuesByTime := map[time.Time]valueByMetric{}
@@ -124,8 +125,9 @@ func PrintRespXSV(resp *prometheus.QueryRangeResponse, delimiter string) error {
 	sort.Slice(slice, func(i, j int) bool {
 		return slice[i].time.Before(slice[j].time)
 	})
-
+	var result string
 	// header
+	result = "time" + delimiter + strings.Join(metrics, delimiter) + "\n"
 	fmt.Printf("time%s%s\n", delimiter, strings.Join(metrics, delimiter))
 
 	// print rows
@@ -138,11 +140,21 @@ func PrintRespXSV(resp *prometheus.QueryRangeResponse, delimiter string) error {
 				values[i] = ""
 			}
 		}
-		fmt.Printf("%d%s%s\n", s.time.Format("2006-01-02 15:04:05"), delimiter, strings.Join(values, delimiter))
+		result = result + s.time.Format("2006-01-02 15:04:05") + delimiter + strings.Join(values, delimiter) + "\n"
+		fmt.Printf("%s%s%s\n", s.time.Format("2006-01-02 15:04:05"), delimiter, strings.Join(values, delimiter))
 		//fmt.Printf("%d%s%s\n", s.time.Unix(), delimiter, strings.Join(values, delimiter))
 	}
+	WriteWithIoutil(outputfilename, result)
 
 	return nil
+}
+
+func WriteWithIoutil(name, content string) {
+	data := []byte(content)
+	if ioutil.WriteFile(name, data, 0644) == nil {
+		fmt.Println("Success to export to file\n", content)
+	}
+
 }
 
 /*
