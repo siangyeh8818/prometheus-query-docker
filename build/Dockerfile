@@ -19,8 +19,9 @@ RUN env GOOS=linux GOARCH=amd64 go build -o prometheusQuery -v -ldflags "-s" git
 ##### To reduce the final image size, start a new stage with alpine from scratch #####
 
 FROM alpine:3.9
-RUN apk --no-cache add ca-certificates libc6-compat busybox-extras
-
+RUN apk --no-cache add bash ca-certificates libc6-compat busybox-extras tzdata
+RUN ln -sf /usr/share/zoneinfo/Asia/Taipei /etc/localtime 
+RUN echo "Asia/Shanghai" > /etc/timezone
 # Run as root
 WORKDIR /root/
 
