@@ -64,9 +64,11 @@ func main() {
 
 		logDay := nTime.In(local1).Format("20060102")
 		NexusServer := os.Getenv("NEXUS_SERVER")
+		fmt.Printf("NEXUS_SERVER : %s", NexusServer)
 		NexusUser := os.Getenv("NEXUS_USER")
 		NexusPassword := os.Getenv("NEXUS_PASSWORD")
 		NexusRepository := os.Getenv("NEXUS_REPOSITORY")
+		fmt.Printf("NEXUS_REPOSITORY : %s", NexusRepository)
 		PostURL := "curl -X POST  '" + NexusServer + "/service/rest/v1/components?repository=" + NexusRepository + "' --user  " + NexusUser + ":" + NexusPassword + " -F 'raw.directory=" + logDay + "' -F 'raw.asset1=@report.csv;type=text/csv' -F 'raw.asset1.filename=report.csv' -H 'accept: application/json' -H 'Content-Type: multipart/form-data'"
 		fmt.Println(PostURL)
 
