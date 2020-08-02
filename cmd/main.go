@@ -71,7 +71,7 @@ func main() {
 		fmt.Println(PostURL)
 
 		result, _ := nexus.ExecShell(PostURL)
-		//fmt.Println(result)
+		fmt.Println(result)
 		//nexus.POSTForm_NesusAPI("report.csv")
 		//nexus.PostNesusAPI(PostURL, NexusUser, NexusPassword, "")
 	}
